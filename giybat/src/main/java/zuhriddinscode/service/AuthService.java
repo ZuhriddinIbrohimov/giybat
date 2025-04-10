@@ -6,7 +6,6 @@ import zuhriddinscode.dto.RegistrationDTO;
 import zuhriddinscode.entity.ProfileEntity;
 import zuhriddinscode.exps.AppBadException;
 import zuhriddinscode.repository.ProfileRepository;
-
 import java.util.Optional;
 
 @Service
