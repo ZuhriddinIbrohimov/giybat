@@ -5,8 +5,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import zuhriddinscode.dto.RegistrationDTO;
 import zuhriddinscode.entity.ProfileEntity;
+import zuhriddinscode.enums.ProfileRoles;
 import zuhriddinscode.exps.AppBadException;
 import zuhriddinscode.repository.ProfileRepository;
+import zuhriddinscode.repository.ProfileRoleRepository;
 import zuhriddinscode.types.GeneralStatus;
 
 import java.time.LocalDateTime;
@@ -19,21 +21,33 @@ public class AuthService {
     private ProfileRepository profileRepository;
 
     @Autowired
+    private ProfileRoleRepository profileRoleRepository;
+
+    @Autowired
+    private ProfileRoleService profileRoleService;
+
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private EmailSendingService emailSendingService;
 
     public String registration(RegistrationDTO registrationDTO) {
         // 1. validation
         // 2. user mb da bormi ?
 
         Optional<ProfileEntity> optional = profileRepository.findByUsernameAndVisibleTrue(registrationDTO.getUsername());
-        if (optional.isEmpty()) {
+        if (optional.isPresent()) {
             ProfileEntity profile = optional.get();
             if (profile.getStatus().equals(GeneralStatus.IN_REGISTRATION)) {
+                profileRoleService.deleteRoles(profile.getId());
                 profileRepository.delete(profile);
+                //send sms/email
             } else {
                 throw new AppBadException("Username already exists");
             }
         }
+
         ProfileEntity entity = new ProfileEntity();
         entity.setName(registrationDTO.getName());
         entity.setUsername(registrationDTO.getUsername());
@@ -41,6 +55,17 @@ public class AuthService {
         entity.setStatus(GeneralStatus.IN_REGISTRATION);
         entity.setCreatedDate(LocalDateTime.now());
         profileRepository.save(entity);
+
+        // INSERT ROLES
+        profileRoleService.create(entity.getId(), ProfileRoles.ROLE_USER);
+        emailSendingService.sendRegistration(registrationDTO.getUsername(), entity.getId());
         return "Successfully registered";
+        //SEND
+    }
+
+    public String regVerification(Integer profileId) {
+        ProfileEntity profile = prof
+
+        return
     }
 }

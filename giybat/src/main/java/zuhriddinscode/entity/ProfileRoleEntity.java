@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import zuhriddinscode.enums.ProfileRoles;
 import java.time.LocalDateTime;
 
-@Table(name = "profile_role")
 @Entity
+@Table(name = "profile_role")
 public class ProfileRoleEntity {
 
     @Id

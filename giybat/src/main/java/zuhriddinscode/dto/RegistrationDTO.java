@@ -1,11 +1,26 @@
 package zuhriddinscode.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class RegistrationDTO {
 
+    @NotBlank(message = "name required")
     private String name;
+
+    @NotBlank(message = "username required")
     private String username;
+
+    @NotBlank(message = "password required")
     private String password;
 
+    @Override
+    public String toString() {
+        return "RegistrationDTO{" +
+                "name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 
     public String getName() {
         return name;
