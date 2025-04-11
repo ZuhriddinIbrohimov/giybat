@@ -10,7 +10,6 @@ import zuhriddinscode.exps.AppBadException;
 import zuhriddinscode.repository.ProfileRepository;
 import zuhriddinscode.repository.ProfileRoleRepository;
 import zuhriddinscode.types.GeneralStatus;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -31,6 +30,9 @@ public class AuthService {
 
     @Autowired
     private EmailSendingService emailSendingService;
+
+    @Autowired
+    private ProfileService profileService;
 
     public String registration(RegistrationDTO registrationDTO) {
         // 1. validation
@@ -64,8 +66,11 @@ public class AuthService {
     }
 
     public String regVerification(Integer profileId) {
-        ProfileEntity profile = prof
-
-        return
+        ProfileEntity profile = profileService.getById(profileId);
+        if (profile.getStatus().equals(GeneralStatus.IN_REGISTRATION)) {
+            profileRepository.changeStatus(profileId, GeneralStatus.ACTIVE);
+            return "Verification finished";
+        }
+    throw new AppBadException("Verification failed");
     }
 }

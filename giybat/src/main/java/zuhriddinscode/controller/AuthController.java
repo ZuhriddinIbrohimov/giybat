@@ -15,12 +15,12 @@ public class AuthController {
     public AuthService authService;
 
     @PostMapping("/registration")
-    public ResponseEntity<String> registration( @Valid @RequestBody RegistrationDTO registrationDTO) {
-        return ResponseEntity.ok().body(authService.registration(registrationDTO));
+    public ResponseEntity<String> registration ( @Valid @RequestBody RegistrationDTO registrationDTO) {
+        return ResponseEntity.ok().body ( authService.registration(registrationDTO));
     }
 
-    @PostMapping ("/registration/verification/{id}")
-    public ResponseEntity<String> regVerification ( @Valid @PathVariable{"id"} Integer profileId){
+    @GetMapping ("/registration/verification/{profileId}")
+    public ResponseEntity<String> regVerification ( @PathVariable("profileId") Integer profileId ) {
         return ResponseEntity.ok().body ( authService.regVerification(profileId) );
     }
 }
