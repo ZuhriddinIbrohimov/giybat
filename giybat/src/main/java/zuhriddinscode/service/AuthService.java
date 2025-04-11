@@ -10,6 +10,7 @@ import zuhriddinscode.exps.AppBadException;
 import zuhriddinscode.repository.ProfileRepository;
 import zuhriddinscode.repository.ProfileRoleRepository;
 import zuhriddinscode.types.GeneralStatus;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -45,7 +46,7 @@ public class AuthService {
                 profileRoleService.deleteRoles(profile.getId());
                 profileRepository.delete(profile);
                 //send sms/email
-            } else {
+        } else {
                 throw new AppBadException("Username already exists");
             }
         }
@@ -60,17 +61,17 @@ public class AuthService {
 
         // INSERT ROLES
         profileRoleService.create(entity.getId(), ProfileRoles.ROLE_USER);
-        emailSendingService.sendRegistration(registrationDTO.getUsername(), entity.getId());
+        emailSendingService.sendRegistrationEmail(registrationDTO.getUsername(), entity.getId());
         return "Successfully registered";
         //SEND
     }
 
     public String regVerification(Integer profileId) {
-        ProfileEntity profile = profileService.getById(profileId);
+        ProfileEntity profile = profileService.getById ( profileId);
         if (profile.getStatus().equals(GeneralStatus.IN_REGISTRATION)) {
             profileRepository.changeStatus(profileId, GeneralStatus.ACTIVE);
             return "Verification finished";
         }
-    throw new AppBadException("Verification failed");
+        throw new AppBadException("Verification failed");
     }
 }

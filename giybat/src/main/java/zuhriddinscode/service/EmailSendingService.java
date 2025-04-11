@@ -7,6 +7,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import zuhriddinscode.util.JwtUtil;
 
 @Service
 public class EmailSendingService {
@@ -16,7 +17,8 @@ public class EmailSendingService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    public void sendRegistration(String email, Integer profileId) {
+    public void sendRegistrationEmail(String email, Integer profileId) {
+        String subject = "Complete Registration";
         String body = "<html lang=\"en\">\n" +
                 "<head>\n" +
                 "    <meta charset=\"UTF-8\">\n" +
@@ -48,13 +50,13 @@ public class EmailSendingService {
                 "\n" +
                 "<p>\n" +
                 "    Please click to button for completing registration :<a class=\"button-link\"\n" +
-                "                                                           href=\"http://localhost:8080/auth/registration/verification/%d\"\n" +
+                "                                                           href=\"http://localhost:8080/auth/registration/verification/%s\"\n" +
                 "                                                           target=\"_blank\">Click here</a>\n" +
                 "</p>\n" +
                 "</body>\n" +
                 "</html>";
-        body = String.format(body, profileId);
-        String subject = "Complete Registration";
+        body = String.format(body, JwtUtil.encode(profileId));
+        System.out.print(JwtUtil.encode(profileId));
         sendMimeEmail(email, subject, body);
     }
 
@@ -71,7 +73,6 @@ public class EmailSendingService {
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
-
 //        SimpleMailMessage msg = new SimpleMailMessage();
 //        msg.setFrom(fromAccount);
 //        msg.setTo(email);
