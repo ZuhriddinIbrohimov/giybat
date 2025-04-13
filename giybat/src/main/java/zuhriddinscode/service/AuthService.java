@@ -1,9 +1,12 @@
 package zuhriddinscode.service;
 
 import io.jsonwebtoken.JwtException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import zuhriddinscode.dto.AuthDTO;
+import zuhriddinscode.dto.ProfileDTO;
 import zuhriddinscode.dto.RegistrationDTO;
 import zuhriddinscode.entity.ProfileEntity;
 import zuhriddinscode.enums.ProfileRoles;
@@ -12,7 +15,6 @@ import zuhriddinscode.repository.ProfileRepository;
 import zuhriddinscode.repository.ProfileRoleRepository;
 import zuhriddinscode.types.GeneralStatus;
 import zuhriddinscode.util.JwtUtil;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -48,7 +50,7 @@ public class AuthService {
                 profileRoleService.deleteRoles(profile.getId());
                 profileRepository.delete(profile);
                 //send sms/email
-        } else {
+            } else {
                 throw new AppBadException("Username already exists");
             }
         }
@@ -80,5 +82,24 @@ public class AuthService {
 
         }
         throw new AppBadException("Verification failed");
+    }
+
+    public ProfileDTO login(@Valid AuthDTO dto) {
+       Optional<ProfileEntity> optional =  profileRepository.findByUsernameAndVisibleTrue(dto.getUsername());
+        if (optional.isEmpty()){
+            throw new AppBadException("Username or password is wrong");
+        }
+        ProfileEntity profile = optional.get();
+        if (!bCryptPasswordEncoder.matches(dto.getPassword(), profile.getPassword())){
+            throw new AppBadException("Username or password is wrong");
+        }
+        if ( !profile.getStatus().equals(GeneralStatus.ACTIVE) ){
+            throw new AppBadException("Status is wrong");
+        }
+
+        ProfileDTO dto1 = new ProfileDTO();
+        dto1.
+
+        return null;
     }
 }
