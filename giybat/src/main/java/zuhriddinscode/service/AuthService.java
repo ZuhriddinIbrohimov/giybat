@@ -1,5 +1,6 @@
 package zuhriddinscode.service;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import zuhriddinscode.exps.AppBadException;
 import zuhriddinscode.repository.ProfileRepository;
 import zuhriddinscode.repository.ProfileRoleRepository;
 import zuhriddinscode.types.GeneralStatus;
+import zuhriddinscode.util.JwtUtil;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -66,11 +68,16 @@ public class AuthService {
         //SEND
     }
 
-    public String regVerification(Integer profileId) {
-        ProfileEntity profile = profileService.getById ( profileId);
-        if (profile.getStatus().equals(GeneralStatus.IN_REGISTRATION)) {
-            profileRepository.changeStatus(profileId, GeneralStatus.ACTIVE);
-            return "Verification finished";
+    public String regVerification(String token) {
+        try {
+            Integer profileId = JwtUtil.decodeRegVerToken(token);
+            ProfileEntity profile = profileService.getById(profileId);
+            if (profile.getStatus().equals(GeneralStatus.IN_REGISTRATION)) {
+                profileRepository.changeStatus(profileId, GeneralStatus.ACTIVE);
+                return "Verification finished";
+            }
+        } catch (JwtException e) {
+
         }
         throw new AppBadException("Verification failed");
     }

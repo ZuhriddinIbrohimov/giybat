@@ -9,7 +9,7 @@ import zuhriddinscode.entity.ProfileEntity;
 import zuhriddinscode.types.GeneralStatus;
 import java.util.Optional;
 
-@Repository
+//@Repository
 public interface ProfileRepository extends CrudRepository<ProfileEntity, Integer> {
 
     Optional<ProfileEntity> findByUsernameAndVisibleTrue (String username );

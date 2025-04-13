@@ -13,6 +13,8 @@ import zuhriddinscode.util.JwtUtil;
 public class EmailSendingService {
 
     private String fromAccount = "ibrohimovzuhriddin310@gmail.com";
+    private String serverDomain="http://localhost:8080";
+
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -50,12 +52,12 @@ public class EmailSendingService {
                 "\n" +
                 "<p>\n" +
                 "    Please click to button for completing registration :<a class=\"button-link\"\n" +
-                "                                                           href=\"http://localhost:8080/auth/registration/verification/%s\"\n" +
+                "                                                           href=\"%s/auth/registration/verification/%s\"\n" +
                 "                                                           target=\"_blank\">Click here</a>\n" +
                 "</p>\n" +
                 "</body>\n" +
                 "</html>";
-        body = String.format(body, JwtUtil.encode(profileId));
+        body = String.format(body, serverDomain,JwtUtil.encode(profileId));
         System.out.print(JwtUtil.encode(profileId));
         sendMimeEmail(email, subject, body);
     }
@@ -73,12 +75,6 @@ public class EmailSendingService {
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
-//        SimpleMailMessage msg = new SimpleMailMessage();
-//        msg.setFrom(fromAccount);
-//        msg.setTo(email);
-//        msg.setSubject(subject);
-//        msg.setText(body);
-//        javaMailSender.send(msg);
         return "Mail was send";
     }
 }
