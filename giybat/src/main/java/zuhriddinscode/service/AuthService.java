@@ -96,9 +96,12 @@ public class AuthService {
         if ( !profile.getStatus().equals(GeneralStatus.ACTIVE) ){
             throw new AppBadException("Status is wrong");
         }
+        ProfileDTO response = new ProfileDTO();
+        response.setName(profile.getName());
+        response.setUsername(profile.getUsername());
+        response.setRoles(profileRoleRepository.getAllRolesListByProfileId(profile.getId()));   //          -----------------------------------------------
+        response.setJwt();
 
-        ProfileDTO dto1 = new ProfileDTO();
-        dto1.
 
         return null;
     }
