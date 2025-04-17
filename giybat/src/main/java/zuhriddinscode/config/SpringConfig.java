@@ -53,7 +53,7 @@ public class SpringConfig {
         authenticationProvider.setUserDetailsService(new InMemoryUserDetailsManager());
 //        authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
-    }
+    } //
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
