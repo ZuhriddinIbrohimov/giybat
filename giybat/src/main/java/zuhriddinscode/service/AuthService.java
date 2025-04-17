@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import zuhriddinscode.dto.AuthDTO;
+import zuhriddinscode.dto.JwtDTO;
 import zuhriddinscode.dto.ProfileDTO;
 import zuhriddinscode.dto.RegistrationDTO;
 import zuhriddinscode.entity.ProfileEntity;
@@ -100,9 +101,7 @@ public class AuthService {
         response.setName(profile.getName());
         response.setUsername(profile.getUsername());
         response.setRoles(profileRoleRepository.getAllRolesListByProfileId(profile.getId()));   //          -----------------------------------------------
-        response.setJwt();
-
-
-        return null;
+        response.setJwt(JwtUtil.encode(profile.getId(), response.getRoles()));
+        return response;
     }
 }

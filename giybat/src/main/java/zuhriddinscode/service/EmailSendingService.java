@@ -7,14 +7,16 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import zuhriddinscode.repository.ProfileRoleRepository;
 import zuhriddinscode.util.JwtUtil;
 
 @Service
 public class EmailSendingService {
 
+    ProfileRoleRepository profileRoleRepository;
+
     private String fromAccount = "ibrohimovzuhriddin310@gmail.com";
     private String serverDomain="http://localhost:8080";
-
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -57,8 +59,8 @@ public class EmailSendingService {
                 "</p>\n" +
                 "</body>\n" +
                 "</html>";
-        body = String.format(body, serverDomain,JwtUtil.encode(profileId));
-        System.out.print(JwtUtil.encode(profileId));
+//        body = String.format(body, serverDomain, JwtUtil.encode( profileId,profileRoleRepository.getAllRolesListByProfileId(profileId)));
+//        System.out.print(JwtUtil.encode(profileId, profileRoleRepository.getAllRolesListByProfileId()));
         sendMimeEmail(email, subject, body);
     }
 
