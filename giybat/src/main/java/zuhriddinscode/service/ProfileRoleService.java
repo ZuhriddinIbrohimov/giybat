@@ -3,7 +3,7 @@ package zuhriddinscode.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import zuhriddinscode.entity.ProfileRoleEntity;
-import zuhriddinscode.enums.ProfileRoles;
+import zuhriddinscode.enums.ProfileRole;
 import zuhriddinscode.repository.ProfileRoleRepository;
 import java.time.LocalDateTime;
 
@@ -13,10 +13,10 @@ public class ProfileRoleService {
     @Autowired
     private ProfileRoleRepository profileRoleRepository;
 
-    public void create (Integer profileId, ProfileRoles role) {
+    public void create (Integer profileId, ProfileRole role) {
         ProfileRoleEntity entity = new ProfileRoleEntity();
         entity.setProfileId(profileId);
-        entity.setRole(role);
+        entity.setRoles(role);
         entity.setCreatedDate(LocalDateTime.now());
         profileRoleRepository.save(entity);
     }

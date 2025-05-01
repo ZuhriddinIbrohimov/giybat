@@ -6,11 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import zuhriddinscode.dto.AuthDTO;
-import zuhriddinscode.dto.JwtDTO;
 import zuhriddinscode.dto.ProfileDTO;
 import zuhriddinscode.dto.RegistrationDTO;
 import zuhriddinscode.entity.ProfileEntity;
-import zuhriddinscode.enums.ProfileRoles;
+import zuhriddinscode.enums.ProfileRole;
 import zuhriddinscode.exps.AppBadException;
 import zuhriddinscode.repository.ProfileRepository;
 import zuhriddinscode.repository.ProfileRoleRepository;
@@ -65,7 +64,7 @@ public class AuthService {
         profileRepository.save(entity);
 
         // INSERT ROLES
-        profileRoleService.create(entity.getId(), ProfileRoles.ROLE_USER);
+        profileRoleService.create(entity.getId(), ProfileRole.ROLE_USER);
         emailSendingService.sendRegistrationEmail(registrationDTO.getUsername(), entity.getId());
         return "Successfully registered";
         //SEND
@@ -100,8 +99,8 @@ public class AuthService {
         ProfileDTO response = new ProfileDTO();
         response.setName(profile.getName());
         response.setUsername(profile.getUsername());
-        response.setRoles(profileRoleRepository.getAllRolesListByProfileId(profile.getId()));   //          -----------------------------------------------
-        response.setJwt(JwtUtil.encode(profile.getId(), response.getRoles()));
+        response.setRoleList(profileRoleRepository.getAllRolesListByProfileId(profile.getId()));   //          -----------------------------------------------
+        response.setJwt(JwtUtil.encode(profile.getId(), response.getRoleList()));
         return response;
     }
 }

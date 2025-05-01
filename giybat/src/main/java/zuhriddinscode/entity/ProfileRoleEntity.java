@@ -1,7 +1,7 @@
 package zuhriddinscode.entity;
 
 import jakarta.persistence.*;
-import zuhriddinscode.enums.ProfileRoles;
+import zuhriddinscode.enums.ProfileRole;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,7 +21,7 @@ public class ProfileRoleEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "roles")
-    private ProfileRoles role;
+    private ProfileRole roles;
 
     @Column(name = "created_date")
     private LocalDateTime createdDate;
@@ -54,12 +54,12 @@ public class ProfileRoleEntity {
         this.profile = profile;
     }
 
-    public ProfileRoles getRole() {
-        return role;
+    public ProfileRole getRoles() {
+        return roles;
     }
 
-    public void setRole(ProfileRoles role) {
-        this.role = role;
+    public void setRoles(ProfileRole roles) {
+        this.roles = roles;
     }
 
     public LocalDateTime getCreatedDate() {

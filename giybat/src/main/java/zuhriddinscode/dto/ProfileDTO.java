@@ -1,13 +1,13 @@
 package zuhriddinscode.dto;
 
-import zuhriddinscode.enums.ProfileRoles;
+import zuhriddinscode.enums.ProfileRole;
 import java.util.List;
 
 public class ProfileDTO {
 
     private String username;
     private String name;
-    private List<ProfileRoles> roles;
+    private List<ProfileRole> roleList;
     private String jwt;
 
 
@@ -19,12 +19,12 @@ public class ProfileDTO {
         this.jwt = jwt;
     }
 
-    public List<ProfileRoles> getRoles() {
-        return roles;
+    public List<ProfileRole> getRoleList() {
+        return roleList;
     }
 
-    public void setRoles(List<ProfileRoles> roles) {
-        this.roles = roles;
+    public void setRoleList(List<ProfileRole> roleList) {
+        this.roleList = roleList;
     }
 
     public String getUsername() {

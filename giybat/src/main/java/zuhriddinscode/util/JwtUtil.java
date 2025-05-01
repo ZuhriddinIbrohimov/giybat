@@ -6,8 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import zuhriddinscode.dto.JwtDTO;
-import zuhriddinscode.enums.ProfileRoles;
-
+import zuhriddinscode.enums.ProfileRole;
 import javax.crypto.SecretKey;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,7 +16,7 @@ public class JwtUtil {
     private static final int tokenLiveTime = 1000 * 3600 * 24; //1-day
     private static final String secretKey = "veryLongSecretmazgillattayevlasharaaxmojonjinnijonsurbetbekkiydirhonuxlatdibekloxovdangasabekochkozjonduxovmashaynikmaydagapchishularnioqiganbolsangizgapyoqaniqsizmazgi";
 
-    public static String encode ( Integer id, List<ProfileRoles> roleList ){
+    public static String encode ( Integer id, List<ProfileRole> roleList ){
         String strRoles = roleList.
                 stream().
                 map(item -> item.name())
@@ -75,8 +74,8 @@ public class JwtUtil {
 //            rolesList.add(ProfileRoles.valueOf(role));
 //        }
         //
-        List<ProfileRoles> roleList2= Arrays.stream(strRole.split(","))
-                .map(ProfileRoles::valueOf)
+        List<ProfileRole> roleList2= Arrays.stream(strRole.split(","))
+                .map(ProfileRole::valueOf)
                 .toList();
         return new JwtDTO(id,roleList2);
     }

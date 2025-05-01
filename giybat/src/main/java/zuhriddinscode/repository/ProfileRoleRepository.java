@@ -1,21 +1,22 @@
 package zuhriddinscode.repository;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import zuhriddinscode.entity.ProfileEntity;
+import org.springframework.stereotype.Repository;
 import zuhriddinscode.entity.ProfileRoleEntity;
-import zuhriddinscode.enums.ProfileRoles;
+import zuhriddinscode.enums.ProfileRole;
 import java.util.List;
 
-public interface ProfileRoleRepository extends CrudRepository<ProfileRoleEntity, Integer> {
+@Repository
+public interface ProfileRoleRepository extends JpaRepository<ProfileRoleEntity, Integer> {
 
     @Transactional
     @Modifying
     void deleteByProfileId(Integer profileId);
 
     @Query("select p.roles From ProfileRoleEntity p where p.profileId =?1")
-    List<ProfileRoles> getAllRolesListByProfileId(Integer profileId);
+    List<ProfileRole>  getAllRolesListByProfileId(Integer profileId);
 
 }

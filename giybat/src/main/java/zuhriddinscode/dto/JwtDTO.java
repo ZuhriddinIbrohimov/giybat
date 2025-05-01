@@ -1,6 +1,6 @@
 package zuhriddinscode.dto;
 
-import zuhriddinscode.enums.ProfileRoles;
+import zuhriddinscode.enums.ProfileRole;
 
 import java.util.List;
 import java.util.Objects;
@@ -8,10 +8,10 @@ import java.util.Objects;
 public class JwtDTO {
 
     private Integer id;
-    private List<ProfileRoles> rolesList;
+    private List<ProfileRole> rolesList;
 
 
-    public JwtDTO(Integer id, List<ProfileRoles> rolesList) {
+    public JwtDTO(Integer id, List<ProfileRole> rolesList) {
         this.id = id;
         this.rolesList = rolesList;
     }
@@ -44,11 +44,11 @@ public class JwtDTO {
         this.id = id;
     }
 
-    public List<ProfileRoles> getRolesList() {
+    public List<ProfileRole> getRolesList() {
         return rolesList;
     }
 
-    public void setRolesList(List<ProfileRoles> rolesList) {
+    public void setRolesList(List<ProfileRole> rolesList) {
         this.rolesList = rolesList;
     }
 }
