@@ -1,9 +1,11 @@
 package zuhriddinscode.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -27,7 +29,13 @@ public class SpringConfig {
     }
 
 //    @Autowired
-//    private UserDetailsService userDetailsService;
+//    private CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
+    private UserDetailsService userDetailsService;  //polimorfizmdan foydalanyapmiz customuserdetailsserviceni bolasi bu
+
+
+
 //    @Autowired
 //    private JwtAuthenticationFilter jwtTokenFilter;
 
@@ -37,23 +45,13 @@ public class SpringConfig {
 //    };
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider( BCryptPasswordEncoder bCryptPasswordEncoder ) {
         // authentication (login,password)
-
-        String password = UUID.randomUUID().toString();
-        System.out.println("User password new+"+password);
-
-        UserDetails user = User.builder()
-                .username("user")
-                .password("{noop}"+password)
-                .roles("USER")
-                .build();
-
         final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(new InMemoryUserDetailsManager());
-//        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
         return authenticationProvider;
-    } //
+    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // authorization

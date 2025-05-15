@@ -34,9 +34,6 @@ public class ProfileEntity {
 
 
 
-
-
-
     public String getUsername() {
         return username;
     }
