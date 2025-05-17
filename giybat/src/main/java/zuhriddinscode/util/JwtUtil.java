@@ -16,7 +16,7 @@ public class JwtUtil {
     private static final int tokenLiveTime = 1000 * 3600 * 24; //1-day
     private static final String secretKey = "veryLongSecretmazgillattayevlasharaaxmojonjinnijonsurbetbekkiydirhonuxlatdibekloxovdangasabekochkozjonduxovmashaynikmaydagapchishularnioqiganbolsangizgapyoqaniqsizmazgi";
 
-    public static String encode ( Integer id, List<ProfileRole> roleList ){
+    public static String encode ( String username,  Integer id, List<ProfileRole> roleList ){
         String strRoles = roleList.
                 stream().
                 map(item -> item.name())
@@ -30,11 +30,12 @@ public class JwtUtil {
 
         Map<String, String>  claims = new HashMap<>();
         claims.put("roles", strRoles);
+        claims.put("id",String.valueOf(id));
 
         return Jwts
                 .builder()
                 .claims(claims)
-                .subject(String.valueOf(id))
+                .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + (tokenLiveTime) ))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -63,9 +64,11 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws( token )
                 .getBody();
-        Integer id = Integer.valueOf(claims.getSubject());
+
+        String username = claims.getSubject();
+        Integer id = Integer.valueOf((String) claims.get("id"));
 //        ProfileRoles role = ProfileRoles.valueOf((String) claims.get("role"));
-        String strRole = (String) claims.get("role");
+        String strRole = (String) claims.get("roles");
 
 //        String[] roleArray = strRole.split(",");
         //  ROLE_USER, ROLE_ADMIN
@@ -74,9 +77,9 @@ public class JwtUtil {
 //            rolesList.add(ProfileRoles.valueOf(role));
 //        }
         //
-        List<ProfileRole> roleList2= Arrays.stream(strRole.split(","))
+        List<ProfileRole> roleList2 = Arrays.stream(strRole.split(","))
                 .map(ProfileRole::valueOf)
                 .toList();
-        return new JwtDTO(id,roleList2);
+        return new JwtDTO(username,id,roleList2);
     }
 }

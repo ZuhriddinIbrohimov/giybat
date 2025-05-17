@@ -3,6 +3,7 @@ package zuhriddinscode.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
@@ -34,15 +36,12 @@ public class SpringConfig {
     @Autowired
     private UserDetailsService userDetailsService;  //polimorfizmdan foydalanyapmiz customuserdetailsserviceni bolasi bu
 
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-
-//    @Autowired
-//    private JwtAuthenticationFilter jwtTokenFilter;
-
-//    public static final String[] AUTH_WHITELIST = {
-//            "/profile/registration",
-//            "/profile/authorization",
-//    };
+    public static final String[] AUTH_WHITELIST = {
+            "/auth/**"
+    };
 
     @Bean
     public AuthenticationProvider authenticationProvider( BCryptPasswordEncoder bCryptPasswordEncoder ) {
@@ -57,10 +56,10 @@ public class SpringConfig {
         // authorization
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
             authorizationManagerRequestMatcherRegistry
-                    .requestMatchers("/auth/**").permitAll()
+                    .requestMatchers(AUTH_WHITELIST).permitAll()
                     .anyRequest()
                     .authenticated();
-        });
+        }).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(httpSecurityCorsConfigurer -> {

@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,32 +19,34 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         final String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer")) {
-            filterChain.doFilter(request,response);
+            filterChain.doFilter(request, response);
+            return;
         }
+        try {
+            final String token = header.substring(7).trim();
+            JwtDTO jwtDTO = JwtUtil.decode(token);
+            // load user depending on role
+            String username = jwtDTO.getUsername();
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
-    }
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-    try {
-        final String token = header.substring(7).trim();
-        JwtDTO jwtDTO = JwtUtil.decode(token);
-        // load user depending on role
-        String phone = jwtDTO.getPhone();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(phone);
-
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        filterChain.doFilter(request, response); // Continue the filter chain
-    } catch (JwtException | UsernameNotFoundException e) {
-        filterChain.doFilter(request, response); // Continue the filter chain
-        return;
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            filterChain.doFilter(request, response); // Continue the filter chain
+        } catch (JwtException | UsernameNotFoundException e) {
+            filterChain.doFilter(request, response); // Continue the filter chain
+            return;
+        }
     }
 }
