@@ -12,10 +12,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import zuhriddinscode.dto.JwtDTO;
 import zuhriddinscode.util.JwtUtil;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -48,5 +51,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response); // Continue the filter chain
             return;
         }
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+        return Arrays
+                .stream(SpringConfig.AUTH_WHITELIST)
+                .anyMatch(p-> pathMatcher.match(p, request.getServletPath()));
     }
 }

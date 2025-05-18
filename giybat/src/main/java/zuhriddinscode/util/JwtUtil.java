@@ -60,10 +60,14 @@ public class JwtUtil {
     public static JwtDTO decode (String token){
         Claims claims = Jwts
                 .parser()
-                .setSigningKey(getSignInKey())
+                .verifyWith(getSignInKey())
+//                .setSigningKey(getSignInKey())
                 .build()
-                .parseClaimsJws( token )
-                .getBody();
+                .parseSignedClaims(token)
+//                .parseClaimsJws( token )
+//                .getBody();
+                .getPayload();
+
 
         String username = claims.getSubject();
         Integer id = Integer.valueOf((String) claims.get("id"));
@@ -80,6 +84,6 @@ public class JwtUtil {
         List<ProfileRole> roleList2 = Arrays.stream(strRole.split(","))
                 .map(ProfileRole::valueOf)
                 .toList();
-        return new JwtDTO(username,id,roleList2);
+        return new JwtDTO(id,roleList2, username);
     }
 }
