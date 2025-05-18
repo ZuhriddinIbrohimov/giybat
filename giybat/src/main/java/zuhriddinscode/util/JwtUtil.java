@@ -38,7 +38,7 @@ public class JwtUtil {
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + (tokenLiveTime) ))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .signWith(getSignInKey())
                 .compact();
     }
 
@@ -50,25 +50,20 @@ public class JwtUtil {
     public static Integer decodeRegVerToken(String token){
         Claims claims = Jwts
                 .parser()
-                .setSigningKey(getSignInKey())
+                .verifyWith(getSignInKey())
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
-
+                .parseSignedClaims(token)
+                .getPayload();
         return Integer.valueOf(claims.getSubject());
     }
+
     public static JwtDTO decode (String token){
         Claims claims = Jwts
                 .parser()
                 .verifyWith(getSignInKey())
-//                .setSigningKey(getSignInKey())
                 .build()
                 .parseSignedClaims(token)
-//                .parseClaimsJws( token )
-//                .getBody();
                 .getPayload();
-
-
         String username = claims.getSubject();
         Integer id = Integer.valueOf((String) claims.get("id"));
 //        ProfileRoles role = ProfileRoles.valueOf((String) claims.get("role"));
@@ -80,7 +75,6 @@ public class JwtUtil {
 //        for( String role : roleArray ){
 //            rolesList.add(ProfileRoles.valueOf(role));
 //        }
-        //
         List<ProfileRole> roleList2 = Arrays.stream(strRole.split(","))
                 .map(ProfileRole::valueOf)
                 .toList();

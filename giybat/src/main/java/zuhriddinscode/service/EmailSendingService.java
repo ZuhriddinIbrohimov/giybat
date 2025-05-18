@@ -12,7 +12,8 @@ import zuhriddinscode.util.JwtUtil;
 @Service
 public class EmailSendingService {
 
-    ProfileRoleRepository profileRoleRepository;
+    @Autowired
+    private ProfileRoleRepository profileRoleRepository;
 
     private String fromAccount = "ibrohimovzuhriddin310@gmail.com";
     private String serverDomain="http://localhost:8080";
@@ -58,8 +59,8 @@ public class EmailSendingService {
                 "</p>\n" +
                 "</body>\n" +
                 "</html>";
-        body = String.format(body, serverDomain, JwtUtil.encode( profileId,profileRoleRepository.getAllRolesListByProfileId(profileId)));
-        System.out.print(JwtUtil.encode(profileId, profileRoleRepository.getAllRolesListByProfileId(profileId)));
+//        body = String.format(body, serverDomain, JwtUtil.encode( profileId,profileRoleRepository.getAllRolesListByProfileId(profileId)));
+//        System.out.print(JwtUtil.encode(profileId, profileRoleRepository.getAllRolesListByProfileId(profileId)));
         sendMimeEmail(email, subject, body);
     }
 

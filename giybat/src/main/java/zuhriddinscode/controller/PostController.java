@@ -1,17 +1,20 @@
 package zuhriddinscode.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import zuhriddinscode.dto.PostDTO;
+import zuhriddinscode.util.SpringSecurityUtil;
 
 @RestController
-@RequestMapping("/gossip")
+@RequestMapping("/post")
 public class PostController {
 
-
     @PostMapping("/create")
-    public String create(){
-
-        return  "Done";
+    public String create ( @RequestBody PostDTO dto ) {
+        System.out.println(SpringSecurityUtil.getCurrentProfile());
+        System.out.println(SpringSecurityUtil.getCurrentUserId());
+        return "DONE";
     }
 }
