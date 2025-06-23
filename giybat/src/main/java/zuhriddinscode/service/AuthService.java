@@ -3,12 +3,15 @@ package zuhriddinscode.service;
 import io.jsonwebtoken.JwtException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import zuhriddinscode.dto.AppResponse;
 import zuhriddinscode.dto.AuthDTO;
 import zuhriddinscode.dto.ProfileDTO;
 import zuhriddinscode.dto.RegistrationDTO;
 import zuhriddinscode.entity.ProfileEntity;
+import zuhriddinscode.enums.AppLanguage;
 import zuhriddinscode.enums.ProfileRole;
 import zuhriddinscode.exps.AppBadException;
 import zuhriddinscode.repository.ProfileRepository;
@@ -16,6 +19,7 @@ import zuhriddinscode.repository.ProfileRoleRepository;
 import zuhriddinscode.types.GeneralStatus;
 import zuhriddinscode.util.JwtUtil;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -39,7 +43,10 @@ public class AuthService {
     @Autowired
     private ProfileService profileService;
 
-    public String registration(RegistrationDTO registrationDTO) {
+    @Autowired
+    private ResourceBundleMessageSource  messageSource;
+
+    public AppResponse<String> registration(RegistrationDTO registrationDTO, AppLanguage lang) {
         // 1. validation
         // 2. user mb da bormi ?
 
@@ -51,7 +58,7 @@ public class AuthService {
                 profileRepository.delete(profile);
                 //send sms/email
             } else {
-                throw new AppBadException("Username already exists");
+                throw new AppBadException(messageSource.getMessage("email.phone.exists", null, new Locale(lang.name())));
             }
         }
 
@@ -66,7 +73,7 @@ public class AuthService {
         // INSERT ROLES
         profileRoleService.create(entity.getId(), ProfileRole.ROLE_USER);
         emailSendingService.sendRegistrationEmail(registrationDTO.getUsername(), entity.getId());
-        return "Successfully registered";
+        return new AppResponse <> ( "Successfully registered");
         //SEND
     }
 

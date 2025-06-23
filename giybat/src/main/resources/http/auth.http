@@ -1,0 +1,8 @@
+POST localhost:8080/auth/registration?lang=en
+Content-Type: application/json
+
+{
+  "name": "Zuhriddin",
+  "username": "ibrohimovzuhriddin310@gmail.com",
+  "password": "dasturchi1"
+}
