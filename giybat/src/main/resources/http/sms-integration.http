@@ -1,0 +1,19 @@
+POST https://notify.eskiz.uz/api/auth/login
+Content-Type: application/json
+
+
+{
+  "email": "ibrohimovzuhriddin310@gmail.com",
+  "password": "a7uwksONleghrxm5BKIW6v6Kv6hvooSWBX0XNtNE"
+}
+
+##################
+POST https://notify.eskiz.uz/api/message/sms/send
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTM2NzkxNjgsImlhdCI6MTc1MTA4NzE2OCwicm9sZSI6InRlc3QiLCJzaWduIjoiMTNkZTNmZDkyZWQ0ZmViZGNlZjRmNDE0N2MyOTljODdkMWIyYjllOThkZTVkMjMwNDVlODQ3MmE4MDM0MDI1ZSIsInN1YiI6IjExNDk1In0.SB0o_H9y4SBH0gX93hstGLFvEWluGdjdk8J8K1b6FhA
+
+{
+  "mobile_phone":"998936259577",
+  "message": "This is test from Eskiz",
+  "from": 4546
+}

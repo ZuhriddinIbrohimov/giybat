@@ -3,7 +3,6 @@ package zuhriddinscode.service;
 import io.jsonwebtoken.JwtException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import zuhriddinscode.dto.AppResponse;
@@ -19,7 +18,6 @@ import zuhriddinscode.repository.ProfileRoleRepository;
 import zuhriddinscode.types.GeneralStatus;
 import zuhriddinscode.util.JwtUtil;
 import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -44,7 +42,7 @@ public class AuthService {
     private ProfileService profileService;
 
     @Autowired
-    private ResourceBundleMessageSource  messageSource;
+    private ResourceBundleService resourceBundleService;
 
     public AppResponse<String> registration(RegistrationDTO registrationDTO, AppLanguage lang) {
         // 1. validation
@@ -58,7 +56,8 @@ public class AuthService {
                 profileRepository.delete(profile);
                 //send sms/email
             } else {
-                throw new AppBadException(messageSource.getMessage("email.phone.exists", null, new Locale(lang.name())));
+                throw new AppBadException(resourceBundleService
+                        .getMessage("email.phone.exists", lang));
             }
         }
 
@@ -72,42 +71,41 @@ public class AuthService {
 
         // INSERT ROLES
         profileRoleService.create(entity.getId(), ProfileRole.ROLE_USER);
-        emailSendingService.sendRegistrationEmail(registrationDTO.getUsername(), entity.getId());
-        return new AppResponse <> ( "Successfully registered");
+        emailSendingService.sendRegistrationEmail(registrationDTO.getUsername(), entity.getId(), lang);
+        return new AppResponse <> ( resourceBundleService.getMessage("email.confirm.send",lang));
         //SEND
     }
 
-    public String regVerification(String token) {
+    public String regVerification(String token, AppLanguage lang) {
         try {
             Integer profileId = JwtUtil.decodeRegVerToken(token);
             ProfileEntity profile = profileService.getById(profileId);
             if (profile.getStatus().equals(GeneralStatus.IN_REGISTRATION)) {
                 profileRepository.changeStatus(profileId, GeneralStatus.ACTIVE);
-                return "Verification finished";
+                return resourceBundleService.getMessage("verification.finish",lang);
             }
         } catch (JwtException e) {
-
         }
-        throw new AppBadException("Verification failed");
+        throw new AppBadException(resourceBundleService.getMessage("verification.fail", lang));
     }
 
-    public ProfileDTO login(@Valid AuthDTO dto) {
+    public ProfileDTO login(@Valid AuthDTO dto, AppLanguage lang) {
        Optional<ProfileEntity> optional =  profileRepository.findByUsernameAndVisibleTrue(dto.getUsername());
         if (optional.isEmpty()){
-            throw new AppBadException("Username or password is wrong");
+            throw new AppBadException(resourceBundleService.getMessage("username.password.wrong",lang));
         }
         ProfileEntity profile = optional.get();
         if (!bCryptPasswordEncoder.matches(dto.getPassword(), profile.getPassword())){
-            throw new AppBadException("Username or password is wrong");
+            throw new AppBadException(resourceBundleService.getMessage("username.password.wrong",lang));
         }
         if ( !profile.getStatus().equals(GeneralStatus.ACTIVE) ){
-            throw new AppBadException("Status is wrong");
+            throw new AppBadException(resourceBundleService.getMessage("wrong.status",lang));
         }
         ProfileDTO response = new ProfileDTO();
         response.setName(profile.getName());
         response.setUsername(profile.getUsername());
         response.setRoleList(profileRoleRepository.getAllRolesListByProfileId(profile.getId()));   //          -----------------------------------------------
-        response.setJwt(JwtUtil.encode( profile.getUsername() ,profile.getId(), response.getRoleList()));
+        response.setJwt(JwtUtil.encode( profile.getId()));
         return response;
     }
 }

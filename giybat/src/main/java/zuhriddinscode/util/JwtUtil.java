@@ -16,11 +16,11 @@ public class JwtUtil {
     private static final int tokenLiveTime = 1000 * 3600 * 24; //1-day
     private static final String secretKey = "veryLongSecretmazgillattayevlasharaaxmojonjinnijonsurbetbekkiydirhonuxlatdibekloxovdangasabekochkozjonduxovmashaynikmaydagapchishularnioqiganbolsangizgapyoqaniqsizmazgi";
 
-    public static String encode ( String username,  Integer id, List<ProfileRole> roleList ){
-        String strRoles = roleList.
-                stream().
-                map(item -> item.name())
-                .collect(Collectors.joining(","));
+    public static String encode (  Integer id ){
+//        String strRoles = roleList.
+//                stream().
+//                map(item -> item.name())
+//                .collect(Collectors.joining(","));
 
 //        List<String> stringList = new LinkedList<>();
 //        for (ProfileRoles roles : roleList){
@@ -28,14 +28,14 @@ public class JwtUtil {
 //        }
 //        String roleString = String.join(",", stringList);
 
-        Map<String, String>  claims = new HashMap<>();
-        claims.put("roles", strRoles);
-        claims.put("id",String.valueOf(id));
+//        Map<String, String>  claims = new HashMap<>();
+//        claims.put("roles", strRoles);
+//        claims.put("id",String.valueOf(id));
 
         return Jwts
                 .builder()
-                .claims(claims)
-                .subject(username)
+//                .claims(claims)
+                .subject(String.valueOf(id))
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + (tokenLiveTime) ))
                 .signWith(getSignInKey())

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import zuhriddinscode.enums.AppLanguage;
 import zuhriddinscode.repository.ProfileRoleRepository;
 import zuhriddinscode.util.JwtUtil;
 
@@ -15,13 +16,16 @@ public class EmailSendingService {
     @Autowired
     private ProfileRoleRepository profileRoleRepository;
 
+    @Autowired
+    private ResourceBundleService resourceBundleService;
+
     private String fromAccount = "ibrohimovzuhriddin310@gmail.com";
     private String serverDomain="http://localhost:8080";
 
     @Autowired
     private JavaMailSender javaMailSender;
 
-    public void sendRegistrationEmail(String email, Integer profileId) {
+    public void sendRegistrationEmail(String email, Integer profileId, AppLanguage lang) {
         String subject = "Complete Registration";
         String body = "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -54,13 +58,13 @@ public class EmailSendingService {
                 "\n" +
                 "<p>\n" +
                 "    Please click to button for completing registration :<a class=\"button-link\"\n" +
-                "                                                           href=\"%s/auth/registration/verification/%s\"\n" +
+                "                                                           href=\"%s/auth/registration/verification/%s?lang=%s\"\n" +
                 "                                                           target=\"_blank\">Click here</a>\n" +
                 "</p>\n" +
                 "</body>\n" +
                 "</html>";
-//        body = String.format(body, serverDomain, JwtUtil.encode( profileId,profileRoleRepository.getAllRolesListByProfileId(profileId)));
-//        System.out.print(JwtUtil.encode(profileId, profileRoleRepository.getAllRolesListByProfileId(profileId)));
+        body = String.format(body, serverDomain, JwtUtil.encode( profileId), lang.name());
+        System.out.print(JwtUtil.encode(profileId));
         sendMimeEmail(email, subject, body);
     }
 

@@ -1,8 +1,14 @@
-POST localhost:8080/auth/registration?lang=en
+POST localhost:8080/auth/registration
 Content-Type: application/json
+Accept-Language: EN
 
 {
   "name": "Zuhriddin",
   "username": "ibrohimovzuhriddin310@gmail.com",
   "password": "dasturchi1"
 }
+
+#############
+GET localhost:8080/auth/registration/verification/{{token}}
+ContentUY-Type: application/json
+token:
