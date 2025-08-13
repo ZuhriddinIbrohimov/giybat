@@ -9,6 +9,7 @@ import zuhriddinscode.dto.AppResponse;
 import zuhriddinscode.dto.AuthDTO;
 import zuhriddinscode.dto.ProfileDTO;
 import zuhriddinscode.dto.RegistrationDTO;
+import zuhriddinscode.dto.sms.SmsVerificationDTO;
 import zuhriddinscode.entity.ProfileEntity;
 import zuhriddinscode.enums.AppLanguage;
 import zuhriddinscode.enums.ProfileRole;
@@ -76,7 +77,7 @@ public class AuthService {
         //SEND
     }
 
-    public String regVerification(String token, AppLanguage lang) {
+    public String registrationEmailVerification(String token, AppLanguage lang) {
         try {
             Integer profileId = JwtUtil.decodeRegVerToken(token);
             ProfileEntity profile = profileService.getById(profileId);
@@ -107,5 +108,23 @@ public class AuthService {
         response.setRoleList(profileRoleRepository.getAllRolesListByProfileId(profile.getId()));   //          -----------------------------------------------
         response.setJwt(JwtUtil.encode( profile.getId()));
         return response;
+    }
+
+    public String registrationSmsVerification(SmsVerificationDTO dto, AppLanguage lang) {
+        Optional <ProfileEntity>  optional = profileRepository.findByUsernameAndVisibleTrue(dto.getCode());
+        if (optional.isEmpty()){
+            throw new AppBadException(resourceBundleService.getMessage("profile.not.found", lang));
+        }
+        ProfileEntity profile = optional.get();
+        if (! profile.getStatus().equals(GeneralStatus.IN_REGISTRATION)) {
+            throw new AppBadException(resourceBundleService.getMessage("verification.fail",lang));
+        }
+        /// code check
+        ///  ACTIVE
+
+
+
+
+        return null;
     }
 }

@@ -1,4 +1,4 @@
-package zuhriddinscode.service.sms;
+package zuhriddinscode.dto.sms;
 
 public class SmsAuthResponseDTO {
 

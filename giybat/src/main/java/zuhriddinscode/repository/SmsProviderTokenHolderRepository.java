@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface SmsProviderTokenHolderRepository extends CrudRepository<SmsProviderTokenHolderEntity, Integer> {
 
-   Optional < SmsProviderTokenHolderEntity> findTop1();
+//   Optional < SmsProviderTokenHolderEntity> findTop1();
 }

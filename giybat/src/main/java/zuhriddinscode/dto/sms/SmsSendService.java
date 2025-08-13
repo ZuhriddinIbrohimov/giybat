@@ -1,4 +1,4 @@
-package zuhriddinscode.service.sms;
+package zuhriddinscode.dto.sms;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import zuhriddinscode.dto.SmsAuthDTO;
-import zuhriddinscode.entity.SmsProviderTokenHolderEntity;
 import zuhriddinscode.repository.SmsProviderTokenHolderRepository;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class SmsSendService {
@@ -66,25 +63,25 @@ public class SmsSendService {
 
 
     public String getToken() {
-        Optional<SmsProviderTokenHolderEntity> optional = smsProviderTokenHolderRepository.findTop1();
-        if (optional.isEmpty()) {
-            String token = getTokenFromProvider();
-            SmsProviderTokenHolderEntity entity = new SmsProviderTokenHolderEntity();
-            entity.setToken(token);
-            entity.setCreatedDate(LocalDateTime.now());
-            smsProviderTokenHolderRepository.save(entity);
-            return token;
-        }
-        SmsProviderTokenHolderEntity entity = optional.get();
-        LocalDateTime expDate = entity.getCreatedDate().plusMonths(1);
-        if (LocalDateTime.now().isAfter(expDate)) {
-            return entity.getToken();
-        }
-        String token = getTokenFromProvider();
-        entity.setToken(token);
-        entity.setCreatedDate(LocalDateTime.now());
-        smsProviderTokenHolderRepository.save(entity);
-        return token;
+//        Optional<SmsProviderTokenHolderEntity> optional = smsProviderTokenHolderRepository.findTop1();
+//        if (optional.isEmpty()) {
+//            String token = getTokenFromProvider();
+//            SmsProviderTokenHolderEntity entity = new SmsProviderTokenHolderEntity();
+//            entity.setToken(token);
+//            entity.setCreatedDate(LocalDateTime.now());
+//            smsProviderTokenHolderRepository.save(entity);
+//            return token;
+//        }
+//        SmsProviderTokenHolderEntity entity = optional.get();
+//        LocalDateTime expDate = entity.getCreatedDate().plusMonths(1);
+//        if (LocalDateTime.now().isAfter(expDate)) {
+//            return entity.getToken();
+//        }
+//        String token = getTokenFromProvider();
+//        entity.setToken(token);
+//        entity.setCreatedDate(LocalDateTime.now());
+//        smsProviderTokenHolderRepository.save(entity);
+        return null;
     }
 
     public String getTokenFromProvider() {

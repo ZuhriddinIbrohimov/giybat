@@ -8,6 +8,7 @@ import zuhriddinscode.dto.AppResponse;
 import zuhriddinscode.dto.AuthDTO;
 import zuhriddinscode.dto.ProfileDTO;
 import zuhriddinscode.dto.RegistrationDTO;
+import zuhriddinscode.dto.sms.SmsVerificationDTO;
 import zuhriddinscode.enums.AppLanguage;
 import zuhriddinscode.service.AuthService;
 
@@ -24,10 +25,16 @@ public class AuthController {
         return ResponseEntity.ok().body(authService.registration(registrationDTO, lang));
     }
 
-    @GetMapping("/registration/verification/{token}")
-    public ResponseEntity<String> regVerification(@PathVariable("token") String token,
+    @GetMapping("/registration/email-verification/{token}")
+    public ResponseEntity<String> registrationEmailVerification(@PathVariable("token") String token,
                                                   @RequestParam  AppLanguage lang) {
-        return ResponseEntity.ok().body(authService.regVerification(token,lang));
+        return ResponseEntity.ok().body(authService.registrationEmailVerification(token,lang));
+    }
+
+    @PostMapping("/registration/sms-verification")
+    public ResponseEntity<String> registrationSmsVerification( @RequestBody SmsVerificationDTO dto,
+                                                  @RequestHeader(value = "Accept-Language", defaultValue = "UZ")  AppLanguage lang) {
+        return ResponseEntity.ok().body(authService.registrationSmsVerification(dto,lang));
     }
 
     @PostMapping("/login")
