@@ -1,5 +1,9 @@
 package zuhriddinscode.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -11,7 +15,11 @@ import org.springframework.web.client.RestTemplate;
 import zuhriddinscode.dto.SmsAuthDTO;
 import zuhriddinscode.dto.sms.SmsAuthResponseDTO;
 import zuhriddinscode.dto.sms.SmsRequestDTO;
+import zuhriddinscode.entity.SmsProviderTokenHolderEntity;
 import zuhriddinscode.repository.SmsProviderTokenHolderRepository;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class SmsSendService {
@@ -65,24 +73,24 @@ public class SmsSendService {
 
 
     public String getToken() {
-//        Optional<SmsProviderTokenHolderEntity> optional = smsProviderTokenHolderRepository.findTop1();
-//        if (optional.isEmpty()) {
-//            String token = getTokenFromProvider();
-//            SmsProviderTokenHolderEntity entity = new SmsProviderTokenHolderEntity();
-//            entity.setToken(token);
-//            entity.setCreatedDate(LocalDateTime.now());
-//            smsProviderTokenHolderRepository.save(entity);
-//            return token;
-//        }
-//        SmsProviderTokenHolderEntity entity = optional.get();
-//        LocalDateTime expDate = entity.getCreatedDate().plusMonths(1);
-//        if (LocalDateTime.now().isAfter(expDate)) {
-//            return entity.getToken();
-//        }
-//        String token = getTokenFromProvider();
-//        entity.setToken(token);
-//        entity.setCreatedDate(LocalDateTime.now());
-//        smsProviderTokenHolderRepository.save(entity);
+        Optional<SmsProviderTokenHolderEntity> optional = smsProviderTokenHolderRepository.findTop1();
+        if (optional.isEmpty()) {
+            String token = getTokenFromProvider();
+            SmsProviderTokenHolderEntity entity = new SmsProviderTokenHolderEntity();
+            entity.setToken(token);
+            entity.setCreatedDate(LocalDateTime.now());
+            smsProviderTokenHolderRepository.save(entity);
+            return token;
+        }
+        SmsProviderTokenHolderEntity entity = optional.get();
+        LocalDateTime expDate = entity.getCreatedDate().plusMonths(1);
+        if (LocalDateTime.now().isAfter(expDate)) {
+            return entity.getToken();
+        }
+        String token = getTokenFromProvider();
+        entity.setToken(token);
+        entity.setCreatedDate(LocalDateTime.now());
+        smsProviderTokenHolderRepository.save(entity);
         return null;
     }
 
@@ -90,17 +98,21 @@ public class SmsSendService {
         SmsAuthDTO smsAuthDTO = new SmsAuthDTO();
         smsAuthDTO.setEmail(email);
         smsAuthDTO.setPassword(password);
-        SmsAuthResponseDTO response = restTemplate.postForObject(SmsUrl + "/auth/login", smsAuthDTO, SmsAuthResponseDTO.class);
+        String response = restTemplate.postForObject(SmsUrl + "/auth/login", smsAuthDTO, String.class);
 
         try {
-//            JsonNode parent = new ObjectMapper().readTree(response);
-//            JsonNode data = parent.get("data");
-//            String token = data.get("token").asText();
-//            System.out.println("token:"+token);
-            System.out.println(response.getData().getToken());
-            return response.getData().getToken();
+            JsonNode parent = new ObjectMapper().readTree(response);
+            JsonNode data = parent.get("data");
+            String token = data.get("token").asText();
+            System.out.println("token:"+token);
+            System.out.println(response);
+            return response;
         } catch (RuntimeException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
