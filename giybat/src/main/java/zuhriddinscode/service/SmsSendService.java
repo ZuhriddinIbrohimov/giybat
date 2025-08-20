@@ -73,25 +73,29 @@ public class SmsSendService {
 
 
     public String getToken() {
-        Optional<SmsProviderTokenHolderEntity> optional = smsProviderTokenHolderRepository.findTop1();
-        if (optional.isEmpty()) {
+        Optional<SmsProviderTokenHolderEntity> optional = smsProviderTokenHolderRepository.findTop1By();
+        if (optional.isEmpty()) {  // if token not exists
             String token = getTokenFromProvider();
             SmsProviderTokenHolderEntity entity = new SmsProviderTokenHolderEntity();
             entity.setToken(token);
             entity.setCreatedDate(LocalDateTime.now());
+            entity.setExpiredDate(LocalDateTime.now().plusMonths(1));
             smsProviderTokenHolderRepository.save(entity);
             return token;
         }
+        /// if exists check it
         SmsProviderTokenHolderEntity entity = optional.get();
-        LocalDateTime expDate = entity.getCreatedDate().plusMonths(1);
-        if (LocalDateTime.now().isAfter(expDate)) {
+//        LocalDateTime expDate = entity.getCreatedDate().plusMonths(1);
+        if (LocalDateTime.now().isBefore(entity.getExpiredDate())) {  // if not expired
             return entity.getToken();
         }
+        ///get new token and update
         String token = getTokenFromProvider();
         entity.setToken(token);
         entity.setCreatedDate(LocalDateTime.now());
+        entity.setExpiredDate(LocalDateTime.now().plusMonths(1));
         smsProviderTokenHolderRepository.save(entity);
-        return null;
+        return token;
     }
 
     public String getTokenFromProvider() {
