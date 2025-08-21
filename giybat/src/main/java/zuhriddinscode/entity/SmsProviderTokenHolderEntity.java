@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table (name = "sms_provider_token_holder)")
+@Table (name = "sms_provider_token_holder_entity")
 public class SmsProviderTokenHolderEntity {
 
     @Id

@@ -57,8 +57,7 @@ public class AuthService {
                 profileRepository.delete(profile);
                 //send sms/email
             } else {
-                throw new AppBadException(resourceBundleService
-                        .getMessage("email.phone.exists", lang));
+                throw new AppBadException(resourceBundleService.getMessage("email.phone.exists", lang));
             }
         }
 
@@ -116,7 +115,7 @@ public class AuthService {
             throw new AppBadException(resourceBundleService.getMessage("profile.not.found", lang));
         }
         ProfileEntity profile = optional.get();
-        if (! profile.getStatus().equals(GeneralStatus.IN_REGISTRATION)) {
+        if (!profile.getStatus().equals(GeneralStatus.IN_REGISTRATION)) {
             throw new AppBadException(resourceBundleService.getMessage("verification.fail",lang));
         }
         /// code check

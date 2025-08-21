@@ -52,7 +52,7 @@ public class SmsSendService {
         body.setMessage(message);
         body.setFrom("4546");
         //send request
-        HttpEntity<String> entity = new HttpEntity<>(message, headers);
+        HttpEntity<SmsRequestDTO> entity = new HttpEntity<>(body, headers);
         //login-> token
         //send sms
         ResponseEntity<String> response = restTemplate.exchange(
@@ -61,12 +61,11 @@ public class SmsSendService {
                 entity,
                 String.class);
         //check response
-        if (response.getStatusCode().is2xxSuccessful()) {
+        if (!response.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("Sms not send");
         }
 //        System.out.println(response.getStatusCode());
         System.out.println(response.toString());
-
         return null;
     }
 
