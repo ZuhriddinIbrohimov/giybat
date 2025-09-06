@@ -7,7 +7,6 @@ public class SmsRequestDTO {
     private String from;
 
 
-
     public String getMobile_phone() {
         return mobile_phone;
     }
