@@ -3,6 +3,7 @@ package zuhriddinscode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import zuhriddinscode.enums.SmsType;
 import zuhriddinscode.service.SmsSendService;
 
 @SpringBootTest
@@ -14,6 +15,8 @@ class GiybatApplicationTests {
 	@Test
 	void contextLoads() {
 //		smsSendService.getToken();
-		smsSendService.sendSms("998884252577","This is test from Eskiz");
+		smsSendService.sendSms("998884252577",
+				"This is test from Eskiz",
+				SmsType.REGISTRATION);
 	}
 }

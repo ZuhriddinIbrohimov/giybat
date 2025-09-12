@@ -15,7 +15,9 @@ import org.springframework.web.client.RestTemplate;
 import zuhriddinscode.dto.SmsAuthDTO;
 import zuhriddinscode.dto.sms.SmsAuthResponseDTO;
 import zuhriddinscode.dto.sms.SmsRequestDTO;
+import zuhriddinscode.dto.sms.SmsSendResponseDTO;
 import zuhriddinscode.entity.SmsProviderTokenHolderEntity;
+import zuhriddinscode.enums.SmsType;
 import zuhriddinscode.repository.SmsProviderTokenHolderRepository;
 
 import java.time.LocalDateTime;
@@ -38,8 +40,10 @@ public class SmsSendService {
 
     @Autowired
     private SmsProviderTokenHolderRepository smsProviderTokenHolderRepository;
+    @Autowired
+    private SmsHistoryService smsHistoryService;
 
-    public String sendSms(String phoneNumber, String message) {
+    public SmsSendResponseDTO sendSms(String phoneNumber, String message, SmsType smsType) {
         //check
         String token = getToken();
         //header
@@ -55,20 +59,19 @@ public class SmsSendService {
         HttpEntity<SmsRequestDTO> entity = new HttpEntity<>(body, headers);
         //login-> token
         //send sms
-        ResponseEntity<String> response = restTemplate.exchange(
-                SmsUrl +"/message/sms/send",
-                HttpMethod.POST,
-                entity,
-                String.class);
-        //check response
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Sms not send");
+        try {
+            ResponseEntity<SmsSendResponseDTO> response = restTemplate.exchange(
+                    SmsUrl + "/message/sms/send",
+                    HttpMethod.POST,
+                    entity,
+                    SmsSendResponseDTO.class);
+            smsHistoryService.create(phoneNumber, message, smsType);
+            return response.getBody();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-//        System.out.println(response.getStatusCode());
-        System.out.println(response.toString());
-        return null;
     }
-
 
 
     public String getToken() {
@@ -107,7 +110,7 @@ public class SmsSendService {
             JsonNode parent = new ObjectMapper().readTree(response);
             JsonNode data = parent.get("data");
             String token = data.get("token").asText();
-            System.out.println("token:"+token);
+            System.out.println("token:" + token);
             System.out.println(response);
             return response;
         } catch (RuntimeException e) {
