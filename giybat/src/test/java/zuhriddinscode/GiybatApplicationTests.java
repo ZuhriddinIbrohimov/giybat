@@ -15,7 +15,8 @@ class GiybatApplicationTests {
 	@Test
 	void contextLoads() {
 //		smsSendService.getToken();
-		smsSendService.sendSms("998884252577",
+		smsSendService.sendSms(
+				"998936259577",
 				"This is test from Eskiz",
 				SmsType.REGISTRATION);
 	}
