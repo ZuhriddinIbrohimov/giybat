@@ -10,7 +10,7 @@ public class SmsHistoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private Integer id;
+    private String id;
 
     @Column(name="name")
     private String name;
@@ -29,11 +29,11 @@ public class SmsHistoryEntity {
     private SmsType smsType;
 
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
